@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>新媒体艺术发展史</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+
+        header {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 40px 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 2px;
+            height: 100%;
+            background-color: #ddd;
+        }
+
+        .timeline-item {
+            margin: 40px 0;
+            position: relative;
+            width: 50%;
+            padding: 20px;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+            padding-right: 40px;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+            padding-left: 40px;
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-5px);
+        }
+
+        .timeline-year {
+            position: absolute;
+            top: 0;
+            background: #1a2a6c;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-year {
+            right: -20px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-year {
+            left: -20px;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #1a2a6c;
+            margin-bottom: 15px;
+        }
+
+        p {
+            margin-bottom: 15px;
+        }
+
+        .intro {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 40px;
+        }
+
+        footer {
+            background: #1a2a6c;
+            color: white;
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        .software-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .software-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .software-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .case-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .case-item {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .case-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .case-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .software-logo {
+            width: 100px;
+            height: 100px;
+            object-fit: contain;
+            margin: 20px auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .case-info {
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6), transparent);
+            padding: 20px;
+        }
+
+        .learn-more {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 8px 16px;
+            background: #1a2a6c;
+            color: white;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .learn-more:hover {
+            background: #b21f1f;
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .software-grid, .case-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>新媒体艺术发展史</h1>
+        <p>从早期实验到数字革命</p>
+    </header>
+
+    <div class="container">
+        <div class="intro">
+            <h2>什么是新媒体艺术？</h2>
+            <p>新媒体艺术是一种结合了数字技术、计算机科学和传统艺术形式的现代艺术表现形式。它涵盖了数字艺术、交互装置、虚拟现实、增强现实等多种形式，代表了艺术与科技的完美融合。</p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-year">1960s</div>
+                <div class="timeline-content">
+                    <h2>电子艺术的萌芽</h2>
+                    <p>这个时期，艺术家们开始探索电子媒介的艺术可能性。南姆·琼·派克等先驱者开始使用电视机作为艺术创作媒介，开创了视频艺术的先河。</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1970s</div>
+                <div class="timeline-content">
+                    <h2>计算机艺术的兴起</h2>
+                    <p>随着计算机技术的发展，艺术家们开始使用计算机创作艺术作品。这一时期出现了早期的计算机动画和数字图像处理作品。</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1980s</div>
+                <div class="timeline-content">
+                    <h2>交互艺术的发展</h2>
+                    <p>个人计算机的普及推动了交互艺术的发展。艺术家们开始创作能够与观众互动的作品，打破了传统艺术的单向观赏模式。</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">1990s</div>
+                <div class="timeline-content">
+                    <h2>网络艺术时代</h2>
+                    <p>互联网的出现为新媒体艺术带来了革命性的变化。网络艺术作品开始出现，艺术家们探索了虚拟空间中的创作可能性。</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">2000s</div>
+                <div class="timeline-content">
+                    <h2>数字革命</h2>
+                    <p>数字技术的快速发展带来了更多创作可能。虚拟现实、增强现实、人工智能等技术被广泛应用于艺术创作中。</p>
+                </div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-year">现在</div>
+                <div class="timeline-content">
+                    <h2>融合与创新</h2>
+                    <p>新媒体艺术正在经历前所未有的繁荣发展期。NFT艺术、元宇宙艺术等新形式不断涌现，传统艺术与数字技术的边界越发模糊。</p>
+                </div>
+            </div>
+        </div>
+
+        <h2 class="section-title">创意交互软件发展历程</h2>
+        <div class="software-grid">
+            <div class="software-card">
+                <a href="https://processing.org/" target="_blank">
+                    <img src="images/software/software-processing-logo.png" 
+                         onerror="this.src='https://cdn.jsdelivr.net/gh/processing/processing-website/content/references/images/processing-web.png'" 
+                         alt="Processing Logo" class="software-logo">
+                    <h3>Processing</h3>
+                </a>
+                <p>发布年份：2001</p>
+                <p>一个开源的创意编程语言和IDE，专注于视觉艺术创作和交互设计。广泛应用于数据可视化、生成艺术和互动装置。</p>
+                <a href="https://processing.org/examples" target="_blank" class="learn-more">查看示例作品 →</a>
+            </div>
+            
+            <div class="software-card">
+                <a href="https://cycling74.com/products/max" target="_blank">
+                    <img src="images/software/software-maxmsp-logo.png" 
+                         onerror="this.src='https://cdn.jsdelivr.net/gh/Cycling74/rnbo.example.webpage/images/cycling74.png'" 
+                         alt="Max/MSP Logo" class="software-logo">
+                    <h3>Max/MSP</h3>
+                </a>
+                <p>发布年份：1990</p>
+                <p>视觉化编程环境，主要用于音频、视频处理和多媒体互动创作。在声音艺术和现场表演中广受欢迎。</p>
+                <a href="https://cycling74.com/projects" target="_blank" class="learn-more">浏览项目案例 →</a>
+            </div>
+            
+            <div class="software-card">
+                <a href="https://derivative.ca/" target="_blank">
+                    <img src="images/software/software-touchdesigner-logo.png" 
+                         onerror="this.src='https://avatars.githubusercontent.com/u/1478103?s=200&v=4'" 
+                         alt="TouchDesigner Logo" class="software-logo">
+                    <h3>TouchDesigner</h3>
+                </a>
+                <p>发布年份：2008</p>
+                <p>实时视觉编程平台，用于创建实时交互式多媒体内容，支持3D、VR和大型投影映射项目。</p>
+                <a href="https://derivative.ca/showcase" target="_blank" class="learn-more">探索展示案例 →</a>
+            </div>
+            
+            <div class="software-card">
+                <a href="https://unity.com/" target="_blank">
+                    <img src="images/software/software-unity-logo.png" 
+                         onerror="this.src='https://avatars.githubusercontent.com/u/426196?s=200&v=4'" 
+                         alt="Unity Logo" class="software-logo">
+                    <h3>Unity</h3>
+                </a>
+                <p>发布年份：2005</p>
+                <p>强大的游戏引擎，在新媒体艺术领域被广泛用于创建交互式装置、VR/AR体验和沉浸式环境。</p>
+                <a href="https://unity.com/solutions/digital-twin" target="_blank" class="learn-more">查看数字艺术案例 →</a>
+            </div>
+
+            <div class="software-card">
+                <a href="https://openframeworks.cc/" target="_blank">
+                    <img src="images/software/software-openframeworks-logo.png" 
+                         onerror="this.src='https://avatars.githubusercontent.com/u/142866?s=200&v=4'" 
+                         alt="openFrameworks Logo" class="software-logo">
+                    <h3>openFrameworks</h3>
+                </a>
+                <p>发布年份：2005</p>
+                <p>开源的C++工具包，专注于创意编码。提供强大的图形处理和硬件交互能力，适合大型装置艺术创作。</p>
+                <a href="https://openframeworks.cc/gallery/" target="_blank" class="learn-more">浏览作品画廊 →</a>
+            </div>
+
+            <div class="software-card">
+                <a href="https://www.arduino.cc/" target="_blank">
+                    <img src="images/software/software-arduino-logo.png" 
+                         onerror="this.src='https://avatars.githubusercontent.com/u/379109?s=200&v=4'" 
+                         alt="Arduino Logo" class="software-logo">
+                    <h3>Arduino</h3>
+                </a>
+                <p>发布年份：2003</p>
+                <p>开源硬件平台，广泛用于交互装置和物联网艺术创作。简单易用的开发环境使艺术家能够快速实现创意。</p>
+                <a href="https://blog.arduino.cc/category/arduino-projects/" target="_blank" class="learn-more">查看互动项目 →</a>
+            </div>
+        </div>
+
+        <h2 class="section-title">经典作品案例</h2>
+        <div class="case-gallery">
+            <div class="case-item">
+                <a href="https://www.teamlab.art/e/borderless/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/teamlab/digitalart/main/images/borderless.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=TeamLab+Borderless';" 
+                         alt="TeamLab作品">
+                    <div class="case-info">
+                        <h3>TeamLab - 无界美术馆</h3>
+                        <p>使用Unity和自研软件打造的沉浸式数字艺术空间</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="case-item">
+                <a href="https://refikanadol.com/works/machine-hallucinations-nature-dreams/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/refikanadol/artworks/main/machine-hallucinations.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=Machine+Hallucinations';" 
+                         alt="Refik Anadol作品">
+                    <div class="case-info">
+                        <h3>Refik Anadol - Machine Hallucinations</h3>
+                        <p>使用AI和大数据创作的数据雕塑作品</p>
+                    </div>
+                </a>
+            </div>
+            
+            <div class="case-item">
+                <a href="https://random-international.com/rain-room-2012" target="_blank">
+                    <img src="https://raw.githubusercontent.com/random-international/artworks/main/rain-room.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=Rain+Room';" 
+                         alt="Rain Room">
+                    <div class="case-info">
+                        <h3>Random International - Rain Room</h3>
+                        <p>使用传感器技术和自定义软件创作的互动装置</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="case-item">
+                <a href="https://www.daito.ws/work/pixelflow/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/daitomanabe/works/main/pixelflow.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=PixelFlow';" 
+                         alt="PixelFlow">
+                    <div class="case-info">
+                        <h3>Daito Manabe - PixelFlow</h3>
+                        <p>结合面部追踪技术与投影映射的创新表演作品</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="case-item">
+                <a href="https://www.camilleutterback.com/projects/text-rain/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/camilleutterback/works/main/text-rain.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=Text+Rain';" 
+                         alt="Text Rain">
+                    <div class="case-info">
+                        <h3>Camille Utterback - Text Rain</h3>
+                        <p>经典的互动投影作品，观众可以用身体接触落下的文字</p>
+                    </div>
+                </a>
+            </div>
+
+            <div class="case-item">
+                <a href="https://www.zachlieberman.com/projects/more-than-human/" target="_blank">
+                    <img src="https://raw.githubusercontent.com/zachlieberman/works/main/more-than-human.jpg" 
+                         onerror="this.onerror=null; this.src='https://placehold.co/800x600/1a1a1a/ffffff?text=More+Than+Human';" 
+                         alt="More Than Human">
+                    <div class="case-info">
+                        <h3>Zach Lieberman - More Than Human</h3>
+                        <p>使用openFrameworks创作的实时视觉互动装置</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <style>
+            .software-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 30px;
+                margin: 40px 0;
+            }
+
+            .case-gallery {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 30px;
+                margin: 40px 0;
+            }
+
+            .software-card, .case-item {
+                background: white;
+                border-radius: 12px;
+                overflow: hidden;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                transition: transform 0.3s ease, box-shadow 0.3s ease;
+                padding: 20px;
+            }
+
+            .software-card:hover, .case-item:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 12px rgba(0, 0, 0, 0.15);
+            }
+
+            .case-item {
+                padding: 0;
+            }
+
+            .case-item img {
+                width: 100%;
+                height: 250px;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .software-logo {
+                width: 120px;
+                height: 120px;
+                object-fit: contain;
+                margin: 20px auto;
+                display: block;
+                transition: transform 0.3s ease;
+                padding: 10px;
+            }
+
+            .case-info {
+                background: linear-gradient(to top, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.6), transparent);
+                padding: 20px;
+                color: white;
+            }
+
+            .learn-more {
+                display: inline-block;
+                margin-top: 15px;
+                padding: 8px 16px;
+                background: #1a2a6c;
+                color: white;
+                border-radius: 20px;
+                text-decoration: none;
+                transition: background 0.3s ease;
+            }
+
+            .learn-more:hover {
+                background: #b21f1f;
+                color: white;
+            }
+
+            .software-card a {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+                text-align: center;
+            }
+
+            .case-item a {
+                text-decoration: none;
+                color: inherit;
+                display: block;
+            }
+
+            @media (max-width: 768px) {
+                .software-grid, .case-gallery {
+                    grid-template-columns: 1fr;
+                }
+
+                .software-logo {
+                    width: 100px;
+                    height: 100px;
+                }
+            }
+        </style>
+    </div>
+
+    <footer>
+        <p> 2024 新媒体艺术发展史 | 探索艺术与科技的无限可能</p>
+    </footer>
+</body>
+</html>
