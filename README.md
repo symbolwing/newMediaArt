@@ -43,3 +43,24 @@ python src/main.py --camera-index 0 --process-every 2 --alpha 0.6 --threshold 0.
 
 ## 许可证
 MIT
+\n+## 网页方式部署与使用
+### 启动后端服务（FastAPI）
+```bash
+python3 -m uvicorn src.server:app --host 0.0.0.0 --port 8000
+```
+
+### 访问前端页面
+- 浏览器打开 `http://127.0.0.1:8000/`
+- 点击“启动摄像头”，允许浏览器访问摄像头
+- 页面会按设定间隔将压缩帧上传到 `/api/analyze`，服务端返回人脸框与表情结果，前端完成叠加显示
+
+### 参数说明（接口）
+- POST `/api/analyze` 表单字段：
+  - `image`: 必填，单帧 JPEG 图像
+  - `threshold`: 可选，低于此置信度显示“不确定”，默认 `0.0`
+  - `min_face_size`: 可选，最小人脸尺寸像素，默认 `64`
+
+### 部署建议
+- 生产环境建议在 `uvicorn` 前加反向代理（如 Nginx），开启 gzip/缓存静态资源 `web/` 目录
+- 如需 HTTPS，使用反向代理或 `uvicorn --ssl-keyfile/--ssl-certfile`
+- 跨域部署前后端时，可在 `FastAPI` 中启用 CORS 中间件
