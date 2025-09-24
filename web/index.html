@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>实时表情识别（摄像头 + 后端推理）</title>
+    <style>
+      body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, PingFang SC, Noto Sans CJK, "Microsoft YaHei", sans-serif; background:#0b0d10; color:#e9eef2; }
+      header { padding: 16px 20px; background: #12161a; position: sticky; top: 0; z-index: 1; border-bottom: 1px solid #1d232a; }
+      h1 { font-size: 18px; margin: 0; }
+      .container { padding: 16px 20px; display: grid; grid-template-columns: 1fr; gap: 16px; }
+      .panel { background: #111418; border: 1px solid #1d232a; border-radius: 8px; padding: 12px; }
+      .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+      label { opacity: .85; }
+      input[type="number"] { width: 90px; }
+      button { background:#1f6feb; color:white; border:0; padding:8px 12px; border-radius:6px; cursor:pointer; }
+      button.secondary { background: #2d333b; }
+      canvas, video { max-width: 100%; border-radius: 8px; }
+      .footer { opacity: .7; font-size: 12px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>实时表情识别（浏览器摄像头 → FastAPI 推理）</h1>
+    </header>
+    <div class="container">
+      <div class="panel">
+        <div class="row" style="gap:16px;">
+          <button id="btnStart">启动摄像头</button>
+          <button id="btnStop" class="secondary">停止</button>
+          <label>推理间隔(ms): <input type="number" id="interval" value="250" min="50" step="10"></label>
+          <label>阈值: <input type="number" id="threshold" value="0.35" min="0" max="1" step="0.01"></label>
+          <label>最小人脸(px): <input type="number" id="minFace" value="64" min="32" step="4"></label>
+          <span id="status">准备就绪</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <video id="video" autoplay playsinline muted style="display:block; width:100%; max-width:960px;"></video>
+        <canvas id="overlay" style="position:absolute; left:-9999px; top:-9999px;"></canvas>
+        <canvas id="preview" style="display:block; width:100%; max-width:960px;"></canvas>
+      </div>
+
+      <div class="footer">按「启动摄像头」授权访问。推理在服务器端进行，当前页面只做渲染与上传。</div>
+    </div>
+
+    <script>
+      const video = document.getElementById('video');
+      const overlay = document.getElementById('overlay'); // 用于截帧上传
+      const preview = document.getElementById('preview'); // 用于显示与标注
+      const ctxPreview = preview.getContext('2d');
+      const btnStart = document.getElementById('btnStart');
+      const btnStop = document.getElementById('btnStop');
+      const statusEl = document.getElementById('status');
+      const intervalEl = document.getElementById('interval');
+      const thresholdEl = document.getElementById('threshold');
+      const minFaceEl = document.getElementById('minFace');
+
+      let mediaStream = null;
+      let timer = null;
+      let lastDetections = { faces: [], image_size: [0, 0] };
+
+      function setStatus(text) { statusEl.textContent = text; }
+
+      async function startCamera() {
+        try {
+          mediaStream = await navigator.mediaDevices.getUserMedia({ video: { width: { ideal: 1280 }, height: { ideal: 720 } }, audio: false });
+          video.srcObject = mediaStream;
+          await video.play();
+          setStatus('摄像头已启动');
+          adjustCanvasSize();
+          startLoop();
+        } catch (e) {
+          setStatus('启动失败：' + e);
+        }
+      }
+
+      function stopCamera() {
+        if (timer) { clearInterval(timer); timer = null; }
+        if (mediaStream) {
+          mediaStream.getTracks().forEach(t => t.stop());
+          mediaStream = null;
+        }
+        setStatus('已停止');
+      }
+
+      function adjustCanvasSize() {
+        const w = video.videoWidth || 640;
+        const h = video.videoHeight || 480;
+        preview.width = w;
+        preview.height = h;
+        overlay.width = Math.min(800, w); // 上传尺寸可压缩
+        overlay.height = Math.round(overlay.width * h / w);
+      }
+
+      function drawOverlay() {
+        const w = preview.width, h = preview.height;
+        ctxPreview.drawImage(video, 0, 0, w, h);
+        const scaleX = w / (lastDetections.image_size[0] || w);
+        const scaleY = h / (lastDetections.image_size[1] || h);
+        for (const face of lastDetections.faces) {
+          const [x, y, bw, bh] = face.box;
+          const rx = Math.round(x * scaleX), ry = Math.round(y * scaleY);
+          const rw = Math.round(bw * scaleX), rh = Math.round(bh * scaleY);
+          ctxPreview.strokeStyle = '#00ff88';
+          ctxPreview.lineWidth = 2;
+          ctxPreview.strokeRect(rx, ry, rw, rh);
+          const label = `${face.emotion} ${(face.prob * 100).toFixed(1)}%`;
+          ctxPreview.fillStyle = 'rgba(0,0,0,0.6)';
+          ctxPreview.fillRect(rx, Math.max(0, ry - 24), ctxPreview.measureText(label).width + 10, 22);
+          ctxPreview.fillStyle = '#ffeb3b';
+          ctxPreview.font = '16px system-ui';
+          ctxPreview.fillText(label, rx + 5, Math.max(16, ry - 6));
+        }
+        requestAnimationFrame(drawOverlay);
+      }
+
+      async function analyzeOnce() {
+        if (!mediaStream) return;
+        const octx = overlay.getContext('2d');
+        // 先把视频缩放画到 overlay（降低上传体积）
+        octx.drawImage(video, 0, 0, overlay.width, overlay.height);
+        const blob = await new Promise(resolve => overlay.toBlob(resolve, 'image/jpeg', 0.75));
+        const form = new FormData();
+        form.append('image', blob, 'frame.jpg');
+        form.append('threshold', thresholdEl.value);
+        form.append('min_face_size', minFaceEl.value);
+        try {
+          const res = await fetch('/api/analyze', { method: 'POST', body: form });
+          if (!res.ok) throw new Error(await res.text());
+          lastDetections = await res.json();
+          setStatus(`检测到 ${lastDetections.faces.length} 张人脸`);
+        } catch (e) {
+          setStatus('推理错误：' + e.message);
+        }
+      }
+
+      function startLoop() {
+        const iv = Math.max(50, parseInt(intervalEl.value || '250', 10));
+        if (timer) clearInterval(timer);
+        timer = setInterval(analyzeOnce, iv);
+        requestAnimationFrame(drawOverlay);
+      }
+
+      btnStart.addEventListener('click', startCamera);
+      btnStop.addEventListener('click', stopCamera);
+      intervalEl.addEventListener('change', () => mediaStream && startLoop());
+      window.addEventListener('resize', adjustCanvasSize);
+      video.addEventListener('loadedmetadata', adjustCanvasSize);
+    </script>
+  </body>
+  </html>
+
